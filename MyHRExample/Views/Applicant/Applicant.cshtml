@@ -1,0 +1,268 @@
+﻿@model MyHRExample.Models.ApplicantViewModel
+
+@{
+    ViewData["Title"] = "Available Vacancies";
+}
+
+<div class="page-heading">
+    <div>
+        <div class="eyebrow">CAREERS</div>
+
+        <h1>
+            Find your next opportunity<span>.</span>
+        </h1>
+
+        <p>
+            Explore our open positions, choose the one that fits you,
+            and submit your résumé.
+        </p>
+    </div>
+
+    <span class="draft-badge">
+        @Model.Vacancies.Count open positions
+    </span>
+</div>
+
+
+@if (TempData["UploadMessage"] is string message)
+{
+    <div class="alert alert-success" role="status">
+        @message
+    </div>
+}
+
+@if (TempData["ErrorMessage"] is string error)
+{
+    <div class="validation-summary-errors" role="alert">
+        @error
+    </div>
+}
+
+
+@if (!Model.Vacancies.Any())
+{
+    <section class="editor-card">
+
+        <div class="card-heading">
+            <div class="section-icon">⌕</div>
+
+            <div>
+                <h2>No vacancies available</h2>
+                <p>There are currently no open positions.</p>
+            </div>
+        </div>
+
+        <div class="empty-state">
+            Please check back later for new opportunities.
+        </div>
+
+    </section>
+}
+else
+{
+    <form asp-controller="Applicant"
+          asp-action="UploadResume"
+          method="post"
+          enctype="multipart/form-data">
+
+        <div class="applicant-layout">
+
+            <!-- LEFT SIDE: VACANCIES -->
+
+            <section class="editor-card">
+
+                <div class="card-heading">
+
+                    <div class="section-icon">
+                        ☷
+                    </div>
+
+                    <div>
+                        <h2>Available positions</h2>
+
+                        <p>
+                            Choose the vacancy you would like to apply for.
+                        </p>
+                    </div>
+
+                    <span class="count-badge">
+                        @Model.Vacancies.Count positions
+                    </span>
+
+                </div>
+
+
+                @foreach (var vacancy in Model.Vacancies)
+                {
+                    <label class="vacancy-card">
+
+                        <input type="radio"
+                               name="selectedCriteria"
+                               value="@vacancy.Key"
+                               required />
+
+                        <div class="vacancy-radio">
+                            <span></span>
+                        </div>
+
+                        <div class="vacancy-content">
+
+                            <div class="vacancy-header">
+
+                                <div>
+                                    <div class="vacancy-label">
+                                        OPEN POSITION
+                                    </div>
+
+                                    <h3>
+                                        @vacancy.Name
+                                    </h3>
+                                </div>
+
+                                <span class="vacancy-status">
+                                    Open
+                                </span>
+
+                            </div>
+
+
+                            <div class="vacancy-description">
+                                @vacancy.Criteria
+                            </div>
+
+
+                            <div class="vacancy-select-text">
+                                Select this position →
+                            </div>
+
+                        </div>
+
+                    </label>
+                }
+
+            </section>
+
+
+
+            <!-- RIGHT SIDE: UPLOAD -->
+
+            <aside class="applicant-side">
+
+                <section class="editor-card upload-card">
+
+                    <div class="card-heading">
+
+                        <div class="section-icon">
+                            ↑
+                        </div>
+
+                        <div>
+                            <h2>Your application</h2>
+
+                            <p>
+                                Upload your résumé.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="criteria-input-area">
+
+                        <div class="field name-field">
+                            <label for="name">
+                                Your full name
+                                <span>*</span>
+                            </label>
+
+                            <input id="name"
+                                   name="name"
+                                   type="text"
+                                   class="form-control"
+                                   required
+                                   maxlength="100"
+                                   autocomplete="name"
+                                   placeholder="e.g. Ivan Petrov" />
+
+                            <p class="criteria-help">
+                                Your name will be connected to your application.
+                            </p>
+                        </div>
+
+                        <div class="upload-illustration">
+
+                            <div class="upload-icon">
+                                ↑
+                            </div>
+
+                            <strong>
+                                Upload your résumé
+                            </strong>
+
+                            <p>
+                                PDF, DOC or DOCX
+                            </p>
+
+                        </div>
+
+
+                        <div class="field">
+
+                            <label for="file">
+                                Résumé file
+                                <span>*</span>
+                            </label>
+
+                            <input id="file"
+                                   name="file"
+                                   type="file"
+                                   class="form-control applicant-file"
+                                   accept=".pdf,.doc,.docx"
+                                   required />
+
+                        </div>
+
+
+                        <p class="criteria-help">
+                            Maximum file size: 10 MB.
+                        </p>
+
+                    </div>
+
+
+                    <div class="application-note">
+
+                        <span>✦</span>
+
+                        <p>
+                            First select a position on the left,
+                            then choose your résumé and submit
+                            your application.
+                        </p>
+
+                    </div>
+
+
+                    <div class="form-footer applicant-footer">
+
+                        <button type="submit"
+                                class="primary-button">
+
+                            Submit application
+
+                            <span aria-hidden="true">
+                                ↗
+                            </span>
+
+                        </button>
+
+                    </div>
+
+                </section>
+
+            </aside>
+
+        </div>
+
+    </form>
+}

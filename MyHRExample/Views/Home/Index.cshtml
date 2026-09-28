@@ -1,0 +1,44 @@
+@model MyHRExample.Models.ApplicantCriteriaViewModel
+@{ ViewData["Title"] = "Applicant criteria"; }
+
+@if (TempData["UploadMessage"] is string message)
+{
+    <div class="alert alert-success" role="status">@message</div>
+}
+
+<div class="page-heading">
+    <div><div class="eyebrow">BUILD A BETTER HIRING PROCESS</div><h1>Define your next great hire<span>.</span></h1><p>Describe the skills, experience, and qualities you’re looking for.</p></div>
+    <span class="draft-badge">@(Model.IsSubmitted ? "Preview ready" : "Draft criteria")</span>
+</div>
+<div class="editor-layout">
+    <section class="editor-card" aria-labelledby="criteria-heading">
+        <div class="card-heading"><div class="section-icon" aria-hidden="true">☷</div><div><h2 id="criteria-heading">What are you looking for?</h2><p>All your criteria, in your own words.</p></div></div>
+        <form asp-action="UploadCriteria" method="post">
+            <div asp-validation-summary="All" class="validation-summary" role="alert"></div>
+            <div class="criteria-input-area field">
+                <label asp-for="Criteria">Your applicant criteria</label>
+                <textarea asp-for="Criteria" class="form-control criteria-textarea" rows="12" required aria-describedby="criteria-help" placeholder="For example: We’re looking for someone with experience in customer support, strong written communication skills, and a thoughtful approach to solving problems. They should be comfortable collaborating with a small team.&#10;&#10;Include must-haves, nice-to-haves, and anything else that matters to you."></textarea>
+                <p id="criteria-help" class="criteria-help">Write a few sentences or put each criterion on a new line.</p>
+            </div>
+            <div class="form-footer"><span>Your criteria will be saved as a text file in S3.</span><button type="submit" class="primary-button">Upload criteria <span aria-hidden="true">↗</span></button></div>
+        </form>
+    </section>
+    <section class="editor-card" aria-labelledby="resume-heading">
+        <div class="card-heading"><div><h2 id="resume-heading">Upload a résumé</h2><p>Choose a file to store in S3.</p></div></div>
+        <form asp-controller="Home" asp-action="ResumeSave" method="post" enctype="multipart/form-data">
+            <div class="criteria-input-area field">
+                <label for="file">Résumé file</label>
+                <input id="file" name="file" type="file" class="form-control" aria-describedby="file-help" required />
+                <p id="file-help" class="criteria-help">Maximum file size: 10 MB.</p>
+            </div>
+            <div class="form-footer"><button type="submit" class="primary-button">Upload résumé <span aria-hidden="true">↗</span></button></div>
+        </form>
+    </section>
+</div>
+@if (Model.IsSubmitted)
+{
+    <section class="preview-card" id="criteria-preview" aria-labelledby="preview-heading">
+        <div class="preview-heading"><div><div class="eyebrow">READY FOR A CLOSER LOOK</div><h2 id="preview-heading">Your applicant criteria.</h2></div><span class="success-badge">✓ Preview ready</span></div>
+        <p class="criteria-preview-text">@Model.Criteria</p>
+    </section>
+}

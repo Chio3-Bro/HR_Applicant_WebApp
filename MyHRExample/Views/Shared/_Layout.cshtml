@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] · MyHR</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/base.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <aside class="sidebar">
+        <a class="brand" asp-controller="Home" asp-action="Index"><span class="brand-mark" aria-hidden="true">m<span>·</span></span>myhr<span class="brand-period">.</span></a>
+        <div class="workspace"><span class="workspace-icon">W</span><div>Your workspace<small>Hiring, thoughtfully.</small></div></div>
+        <span class="nav-caption">WORKSPACE</span>
+        <nav aria-label="Main navigation">
+            <a class="sidebar-link @(ViewContext.RouteData.Values["action"]?.ToString() != "Privacy" ? "active" : "")" asp-controller="Home" asp-action="Index"><span aria-hidden="true">▦</span> Applicant criteria <span class="nav-dot"></span></a>
+            <a class="sidebar-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Privacy" ? "active" : "")" asp-controller="Home" asp-action="Privacy"><span aria-hidden="true">◇</span> Privacy</a>
+        </nav>
+        <div class="sidebar-note"><span class="note-spark" aria-hidden="true">✳</span><h3>Good hires start<br />with clear criteria.</h3><p>A little clarity today.<br />A stronger team tomorrow.</p></div>
+        <div class="workspace-footer"><span class="avatar">HR</span><div>Hiring workspace<small>MyHR · 2026</small></div><span class="online-dot" title="Workspace"></span></div>
+    </aside>
+    <div class="app-shell">
+        <header class="topbar"><div>Workspace <span class="breadcrumb-divider">/</span> <strong>@ViewData["Title"]</strong></div><span class="environment-badge"><i></i> Preview workspace</span></header>
+        <main id="main-content">@RenderBody()</main>
+        <footer class="app-footer"><span>Made for more thoughtful hiring.</span><a asp-controller="Home" asp-action="Privacy">Privacy policy ↗</a></footer>
+    </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

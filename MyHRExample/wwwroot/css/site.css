@@ -1,0 +1,307 @@
+/* =========================================
+   APPLICANT PAGE
+   ========================================= */
+
+.applicant-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 25px;
+    align-items: start;
+}
+
+
+/* VACANCY */
+
+.vacancy-card {
+    display: flex;
+    gap: 17px;
+    padding: 25px 26px;
+    border-bottom: 1px solid var(--line);
+    cursor: pointer;
+    background: white;
+    transition: background-color .16s, border-color .16s;
+}
+
+    .vacancy-card:last-child {
+        border-bottom: 0;
+        border-radius: 0 0 12px 12px;
+    }
+
+    .vacancy-card:hover {
+        background: #fafcf7;
+    }
+
+
+    /* hide normal radio */
+
+    .vacancy-card > input {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+
+/* custom radio */
+
+.vacancy-radio {
+    width: 21px;
+    height: 21px;
+    flex-shrink: 0;
+    border: 1px solid #cdd5ca;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    margin-top: 4px;
+    background: white;
+}
+
+    .vacancy-radio span {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: transparent;
+    }
+
+
+.vacancy-card:has(input:checked) {
+    background: #f4f8ef;
+    box-shadow: inset 3px 0 0 var(--green);
+}
+
+
+    .vacancy-card:has(input:checked) .vacancy-radio {
+        border-color: var(--green);
+    }
+
+
+        .vacancy-card:has(input:checked) .vacancy-radio span {
+            background: var(--green);
+        }
+
+
+/* VACANCY CONTENT */
+
+.vacancy-content {
+    flex: 1;
+    min-width: 0;
+}
+
+
+.vacancy-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+
+.vacancy-label {
+    color: #79916b;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    margin-bottom: 7px;
+}
+
+
+.vacancy-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+}
+
+
+.vacancy-status {
+    background: #edf4e6;
+    color: #527346;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 9px;
+    white-space: nowrap;
+}
+
+
+.vacancy-description {
+    margin-top: 16px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.9;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+
+.vacancy-select-text {
+    margin-top: 17px;
+    color: var(--green);
+    font-size: 10px;
+    font-weight: 600;
+}
+
+
+.vacancy-card:has(input:checked)
+.vacancy-select-text {
+    font-weight: 700;
+}
+
+
+/* =========================================
+   UPLOAD SIDE
+   ========================================= */
+
+.applicant-side {
+    position: sticky;
+    top: 105px;
+}
+
+
+.upload-card {
+    overflow: hidden;
+}
+
+
+.upload-illustration {
+    text-align: center;
+    padding: 24px 15px 27px;
+    margin-bottom: 24px;
+    background: #f5f8f0;
+    border: 1px dashed #ccd8c2;
+    border-radius: 9px;
+}
+
+
+.upload-icon {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 15px;
+    border-radius: 50%;
+    background: #e7efdf;
+    color: var(--green);
+    display: grid;
+    place-items: center;
+    font-size: 23px;
+}
+
+
+.upload-illustration strong {
+    display: block;
+    color: var(--ink);
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 7px;
+}
+
+
+.upload-illustration p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 10px;
+}
+
+
+.applicant-file {
+    width: 100%;
+}
+
+
+    .applicant-file::file-selector-button {
+        border: 0;
+        background: #edf3e8;
+        color: var(--green);
+        padding: 8px 11px;
+        margin-right: 10px;
+        border-radius: 5px;
+        font-size: 10px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+
+        .applicant-file::file-selector-button:hover {
+            background: #e2ecda;
+        }
+
+
+/* NOTE */
+
+.application-note {
+    display: flex;
+    gap: 11px;
+    margin: 0 26px 24px;
+    padding: 15px;
+    background: #f7f9f3;
+    border: 1px solid #e4e9de;
+    border-radius: 7px;
+}
+
+
+    .application-note > span {
+        color: #7f9b68;
+        font-size: 18px;
+    }
+
+
+    .application-note p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 10px;
+        line-height: 1.8;
+    }
+
+
+/* BUTTON */
+
+.applicant-footer {
+    display: block;
+}
+
+
+    .applicant-footer .primary-button {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+
+@media (max-width: 1000px) {
+
+    .applicant-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .applicant-side {
+        position: static;
+    }
+}
+
+
+@media (max-width: 640px) {
+
+    .vacancy-card {
+        padding: 21px 18px;
+        gap: 13px;
+    }
+
+    .vacancy-header h3 {
+        font-size: 14px;
+    }
+
+    .vacancy-description {
+        font-size: 11px;
+    }
+
+    .vacancy-status {
+        font-size: 8px;
+    }
+
+    .application-note {
+        margin-left: 18px;
+        margin-right: 18px;
+    }
+}
