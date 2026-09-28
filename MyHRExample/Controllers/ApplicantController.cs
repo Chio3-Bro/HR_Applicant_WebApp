@@ -14,9 +14,7 @@ namespace MyHRExample.Controllers
         }
 
 
-        // ==========================================
         // SHOW APPLICANT PAGE
-        // ==========================================
 
         [HttpGet]
         public async Task<IActionResult> Applicant()
@@ -25,25 +23,18 @@ namespace MyHRExample.Controllers
 
             try
             {
-                // Get only files from criteria/
                 var files =
                     await _s3Service.GetFilesAsync("criteria/");
 
                 foreach (var file in files)
                 {
-                    // Ignore folder entries
                     if (file.Key.EndsWith("/"))
                         continue;
 
-                    // Read the content of the criteria file
                     var content =
                         await _s3Service.GetFileContentAsync(
                             file.Key);
 
-                    // Example:
-                    // criteria/abc123.txt
-                    // becomes:
-                    // abc123
                     var vacancyName =
                         Path.GetFileNameWithoutExtension(
                             file.Key);
@@ -68,9 +59,7 @@ namespace MyHRExample.Controllers
         }
 
 
-        // ==========================================
         // UPLOAD RESUME
-        // ==========================================
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -79,10 +68,7 @@ namespace MyHRExample.Controllers
             string name,
             IFormFile? file)
         {
-            // --------------------------------------
             // 1. Validate vacancy
-            // --------------------------------------
-
             if (string.IsNullOrWhiteSpace(selectedCriteria))
             {
                 TempData["ErrorMessage"] =
@@ -92,10 +78,7 @@ namespace MyHRExample.Controllers
             }
 
 
-            // --------------------------------------
             // 2. Validate applicant name
-            // --------------------------------------
-
             if (string.IsNullOrWhiteSpace(name))
             {
                 TempData["ErrorMessage"] =
@@ -105,10 +88,7 @@ namespace MyHRExample.Controllers
             }
 
 
-            // --------------------------------------
             // 3. Validate file
-            // --------------------------------------
-
             if (file == null || file.Length == 0)
             {
                 TempData["ErrorMessage"] =
@@ -128,10 +108,7 @@ namespace MyHRExample.Controllers
             }
 
 
-            // --------------------------------------
             // 4. Validate file extension
-            // --------------------------------------
-
             var extension =
                 Path.GetExtension(file.FileName)
                     .ToLowerInvariant();
@@ -148,35 +125,13 @@ namespace MyHRExample.Controllers
             }
 
 
-            // --------------------------------------
             // 5. Get vacancy name
-            // --------------------------------------
-
-            // Example:
-            //
-            // criteria/abc123.txt
-            //
-            // becomes:
-            //
-            // abc123
-
             var vacancyName =
                 Path.GetFileNameWithoutExtension(
                     selectedCriteria);
 
 
-            // --------------------------------------
             // 6. Clean applicant name
-            // --------------------------------------
-
-            // Example:
-            //
-            // John Smith
-            //
-            // becomes:
-            //
-            // John_Smith
-
             var cleanName = name.Trim();
 
             foreach (var invalidChar
@@ -193,56 +148,27 @@ namespace MyHRExample.Controllers
                 cleanName.Replace(" ", "_");
 
 
-            // --------------------------------------
             // 7. Create upload date
-            // --------------------------------------
-
-            // Example:
-            // 2026-09-28
-
             var uploadDate =
                 DateTime.Now.ToString("yyyy-MM-dd");
 
 
-            // --------------------------------------
             // 8. Create unique GUID
-            // --------------------------------------
-
             var guid =
                 Guid.NewGuid().ToString("N");
 
 
-            // --------------------------------------
             // 9. Create new filename
-            // --------------------------------------
-
-            // Example:
-            //
-            // John_Smith_2026-09-28_
-            // 54c6204e987f4c858dcba34f02134d51.pdf
-
             var newFileName =
                 $"{cleanName}_{uploadDate}_{guid}{extension}";
 
 
-            // --------------------------------------
             // 10. Create S3 object key
-            // --------------------------------------
-
-            // Example:
-            //
-            // resume/
-            //   abc123/
-            //     John_Smith_2026-09-28_GUID.pdf
-
             var key =
                 $"resume/{vacancyName}/{newFileName}";
 
 
-            // --------------------------------------
             // 11. Upload résumé to S3
-            // --------------------------------------
-
             using var stream =
                 file.OpenReadStream();
 
@@ -262,10 +188,7 @@ namespace MyHRExample.Controllers
             }
 
 
-            // --------------------------------------
             // 12. Success
-            // --------------------------------------
-
             TempData["UploadMessage"] =
                 $"Thank you, {name.Trim()}. " +
                 "Your résumé was successfully uploaded.";
