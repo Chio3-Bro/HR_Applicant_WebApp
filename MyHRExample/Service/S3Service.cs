@@ -4,7 +4,7 @@ using Amazon.S3.Model;
 
 namespace MyHRExample.Service
 {
-    public class S3Service : IDisposable
+    public class S3Service : IDisposable, IAnalysisStorage
     {
         private readonly IConfiguration _configuration;
         private IAmazonS3? _client;
@@ -70,10 +70,15 @@ namespace MyHRExample.Service
                 Prefix = prefix
             };
 
-            var response =
-                await _s3.ListObjectsV2Async(request);
-
-            return response.S3Objects;
+            var files = new List<S3Object>();
+            ListObjectsV2Response response;
+            do
+            {
+                response = await _s3.ListObjectsV2Async(request);
+                if (response.S3Objects != null) files.AddRange(response.S3Objects);
+                request.ContinuationToken = response.NextContinuationToken;
+            } while (response.IsTruncated == true);
+            return files;
         }
 
 
@@ -84,7 +89,7 @@ namespace MyHRExample.Service
         public async Task<string> GetFileContentAsync(
             string objectKey)
         {
-            var response =
+            using var response =
                 await _s3.GetObjectAsync(
                     _bucketName,
                     objectKey);
@@ -93,6 +98,13 @@ namespace MyHRExample.Service
                 new StreamReader(response.ResponseStream);
 
             return await reader.ReadToEndAsync();
+        }
+
+        public async Task<string?> ReadResultAsync(string key)
+        {
+            try { return await GetFileContentAsync(key); }
+            catch (AmazonS3Exception exception) when (exception.StatusCode == System.Net.HttpStatusCode.NotFound)
+            { return null; }
         }
 
 

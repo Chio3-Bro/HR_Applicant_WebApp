@@ -4,6 +4,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<S3Service>();
+builder.Services.AddScoped<IAnalysisStorage>(sp => sp.GetRequiredService<S3Service>());
+builder.Services.AddScoped<CandidateAnalysisService>();
 
 var app = builder.Build();
 

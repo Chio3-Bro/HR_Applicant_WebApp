@@ -1,0 +1,21 @@
+@model CandidateAnalysisViewModel
+@{ ViewData["Title"] = "Аналіз кандидата"; ViewData["Language"] = "uk"; }
+<a class="dashboard-back" asp-action="Index">← Усі кандидати</a>
+<div class="page-heading dashboard-heading"><div><div class="eyebrow">ПОВНИЙ РЕЗУЛЬТАТ · GOOGLE GEMINI</div><h1>@Model.Name</h1><p>@Model.Vacancy · Завантажено @Model.UploadedAt?.ToUniversalTime().ToString("dd.MM.yyyy HH:mm") UTC</p></div><span class="analysis-status @Model.StatusClass">@Model.StatusText</span></div>
+@if (Model.Status == AnalysisStatus.Completed)
+{
+    <section class="editor-card detail-section ai-summary"><h2>✳ AI summary</h2><p>@Model.Summary</p></section>
+    <section class="editor-card detail-section"><h2>Знайдені навички</h2><div class="skill-tags">@foreach (var skill in Model.Skills) { <span>@skill</span> }</div>@if (Model.Skills.Count == 0) { <p class="analysis-muted">Навички не зазначено в результаті.</p> }</section>
+    <div class="requirements-grid detail-requirements">
+        <section class="editor-card detail-section"><h2>✓ Підтверджені вимоги</h2><partial name="_RequirementList" model="Model.ConfirmedRequirements" /></section>
+        <section class="editor-card detail-section"><h2>◇ Інформації не знайдено</h2><partial name="_RequirementList" model="Model.MissingInformation" /><p class="analysis-muted">Ці вимоги потребують уточнення під час співбесіди.</p></section>
+    </div>
+}
+else
+{
+    <section class="editor-card dashboard-empty"><h2>@Model.StatusText</h2><p>@(Model.Notice ?? "Результат ще не готовий. Оновіть сторінку після завершення аналізу резюме.")</p><a class="primary-button" asp-action="Details" asp-route-key="@Model.ResumeKey">Оновити результат ↻</a></section>
+}
+@if (Model.FullJson != null)
+{
+    <details class="editor-card detail-section raw-analysis"><summary>Повний JSON результату</summary><p class="analysis-muted">Усі поля, які повернула Lambda, включно з додатковими деталями аналізу.</p><pre>@Model.FullJson</pre></details>
+}

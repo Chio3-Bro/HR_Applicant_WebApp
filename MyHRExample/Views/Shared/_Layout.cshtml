@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="@(ViewData["Language"] ?? "en")">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -15,7 +15,9 @@
         <div class="workspace"><span class="workspace-icon">W</span><div>Your workspace<small>Hiring, thoughtfully.</small></div></div>
         <span class="nav-caption">WORKSPACE</span>
         <nav aria-label="Main navigation">
-            <a class="sidebar-link @(ViewContext.RouteData.Values["action"]?.ToString() != "Privacy" ? "active" : "")" asp-controller="Home" asp-action="Index"><span aria-hidden="true">▦</span> Applicant criteria <span class="nav-dot"></span></a>
+            <a class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")" asp-controller="Home" asp-action="Index"><span aria-hidden="true">▦</span> Applicant criteria</a>
+            <a class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Dashboard" ? "active" : "")" asp-controller="Dashboard" asp-action="Index"><span aria-hidden="true">◫</span> HR Dashboard</a>
+            <a class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Applicant" ? "active" : "")" asp-controller="Applicant" asp-action="Applicant"><span aria-hidden="true">↥</span> Кандидатам</a>
             <a class="sidebar-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Privacy" ? "active" : "")" asp-controller="Home" asp-action="Privacy"><span aria-hidden="true">◇</span> Privacy</a>
         </nav>
         <div class="sidebar-note"><span class="note-spark" aria-hidden="true">✳</span><h3>Good hires start<br />with clear criteria.</h3><p>A little clarity today.<br />A stronger team tomorrow.</p></div>

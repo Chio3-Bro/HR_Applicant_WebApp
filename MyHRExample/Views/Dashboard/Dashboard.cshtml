@@ -1,0 +1,52 @@
+@model DashboardViewModel
+@{ ViewData["Title"] = "HR Dashboard"; ViewData["Language"] = "uk"; }
+
+<div class="page-heading dashboard-heading">
+    <div><div class="eyebrow">КАНДИДАТИ · GOOGLE GEMINI</div><h1>HR Dashboard<span>.</span></h1><p>Навички, підтверджені вимоги та підсумки аналізу резюме — в одному місці.</p></div>
+    <a class="primary-button" asp-action="Index">Оновити результати ↻</a>
+</div>
+@if (Model.Error != null)
+{
+    <div class="alert alert-warning" role="alert">@Model.Error</div>
+}
+else
+{
+    <div class="dashboard-stats" aria-label="Статистика кандидатів">
+        <div><span>Усього кандидатів</span><strong>@Model.Candidates.Count</strong></div>
+        <div><span>Аналіз завершено</span><strong>@Model.Candidates.Count(c => c.Status == AnalysisStatus.Completed)</strong></div>
+        <div><span>Очікує аналізу</span><strong>@Model.Candidates.Count(c => c.Status == AnalysisStatus.Pending)</strong></div>
+        <div><span>Потребує уваги</span><strong>@Model.Candidates.Count(c => c.Status is AnalysisStatus.Failed or AnalysisStatus.Unavailable)</strong></div>
+    </div>
+    <div class="dashboard-section-heading"><h2>Огляд кандидатів</h2><span>Спочатку найновіші резюме</span></div>
+    @if (Model.Candidates.Count == 0)
+    {
+        <section class="dashboard-empty editor-card"><span aria-hidden="true">↥</span><h2>Тут з’являться ваші кандидати</h2><p>Завантажте перше резюме, щоб розпочати аналіз.</p><a class="primary-button" asp-controller="Applicant" asp-action="Applicant">Додати кандидата</a></section>
+    }
+    <div class="candidate-grid">
+    @foreach (var candidate in Model.Candidates)
+    {
+        <article class="candidate-card editor-card">
+            <header class="candidate-header"><div class="candidate-identity"><span class="candidate-avatar" aria-hidden="true">@(string.IsNullOrEmpty(candidate.Name) ? "?" : System.Globalization.StringInfo.GetNextTextElement(candidate.Name))</span><div><h2>@candidate.Name</h2><p>@candidate.Vacancy</p></div></div><span class="analysis-status @candidate.StatusClass">@candidate.StatusText</span></header>
+            @if (candidate.Status == AnalysisStatus.Completed)
+            {
+                <div class="candidate-body">
+                    <h3>Знайдені навички</h3>
+                    <div class="skill-tags">@foreach (var skill in candidate.Skills) { <span>@skill</span> }</div>
+                    @if (candidate.Skills.Count == 0) { <p class="analysis-muted">Навички не зазначено в результаті.</p> }
+                    <div class="requirements-grid">
+                        <section><h3>✓ Підтверджені вимоги</h3><partial name="_RequirementList" model="candidate.ConfirmedRequirements" /></section>
+                        <section><h3>◇ Інформації не знайдено</h3><partial name="_RequirementList" model="candidate.MissingInformation" /></section>
+                    </div>
+                    <section class="ai-summary"><h3>✳ AI summary</h3><p class="summary-preview">@candidate.Summary</p></section>
+                </div>
+            }
+            else
+            {
+                <div class="candidate-body candidate-waiting"><span aria-hidden="true">@(candidate.Status == AnalysisStatus.Pending ? "◷" : "!")</span><h3>@candidate.StatusText</h3><p>@(candidate.Notice ?? "Резюме завантажено. Навички, вимоги та AI summary з’являться після завершення аналізу. Оновіть результати згодом.")</p></div>
+            }
+            <footer class="candidate-footer"><span>@candidate.UploadedAt?.ToUniversalTime().ToString("dd.MM.yyyy") · UTC</span><a asp-action="Details" asp-route-key="@candidate.ResumeKey" aria-label="Переглянути детальніше: @candidate.Name">Переглянути детальніше <span aria-hidden="true">↗</span></a></footer>
+        </article>
+    }
+    </div>
+    <p class="dashboard-footnote">Відсутність інформації в резюме не означає відсутність навички. Висновки AI варто перевірити під час співбесіди.</p>
+}
